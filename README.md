@@ -1,5 +1,6 @@
 # ACS UPB Mobile
 [![License](https://img.shields.io/badge/license-MIT-green.svg?style=flat)](https://github.com/IoanaAlexandru/acs_upb_mobile/blob/master/LICENSE.txt)
+![Builds](https://build.appcenter.ms/v0.1/apps/21142e3c-39a9-4850-acdf-fc976e5b9402/branches/appcenter/badge)
 
 A mobile application for students at ACS UPB.  
 
