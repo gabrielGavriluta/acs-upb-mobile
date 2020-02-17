@@ -43,6 +43,11 @@ dependencies:
   # Firebase products
   firebase_analytics: ^5.0.2
 
+  # Microsoft AppCenter dependencies
+  appcenter: ^0.2.1
+  appcenter_analytics: ^0.2.1
+  appcenter_crashes: ^0.2.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
