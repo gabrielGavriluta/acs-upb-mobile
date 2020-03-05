@@ -15,6 +15,18 @@ class PortalPage extends StatefulWidget {
 }
 
 class _PortalPageState extends State<PortalPage> {
+  void _onReorder(int oldIndex, int newIndex, List<Website> websites) {
+    setState(
+      () {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        final Website website = websites.removeAt(oldIndex);
+        websites.insert(newIndex, website);
+      },
+    );
+  }
+
   Widget listCategory(String category, List<Website> websites) {
     if (websites == null || websites.isEmpty) {
       return Container();
@@ -30,10 +42,13 @@ class _PortalPageState extends State<PortalPage> {
         ),
         child: Container(
           height: MediaQuery.of(context).size.width / 3,
-          child: ListView(
+          child: ReorderableListView(
             scrollDirection: Axis.horizontal,
+            onReorder: (oldIndex, newIndex) =>
+                _onReorder(oldIndex, newIndex, websites),
             children: websites
                 .map((website) => Padding(
+                    key: ValueKey(website.label),
                     padding:
                         const EdgeInsets.only(top: 4.0, left: 8.0, right: 8.0),
                     child: FutureBuilder<ImageProvider<dynamic>>(
