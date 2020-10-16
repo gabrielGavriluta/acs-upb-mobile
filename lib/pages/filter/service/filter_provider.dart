@@ -57,11 +57,30 @@ class FilterProvider with ChangeNotifier {
     _relevantNodes = null;
     if (global) {
       // Reset defaults
-      PrefService.setStringList('relevant_nodes', null);
+      //PrefService.setStringList('relevant_nodes', null);
+      setFilterNodes(null);
       PrefService.setBool('relevance_filter', true);
     }
   }
-
+  Future<void> setFilterNodes(List<String> nodes) async{
+    try {
+      final DocumentReference doc = _db.collection('users').document(authProvider.uid);
+      await doc.updateData({'filter_nodes': nodes});
+    } catch (e) {
+      print(e);
+    }
+  }
+  Future<List<String>> getFilterNodes(String nodes) async{
+    try {
+      final DocumentReference doc = _db.collection('users').document(authProvider.uid);
+      final DocumentSnapshot snap = await doc.get();
+      final filterNodes =  List<String>.from(snap['filter_nodes'] ?? []);
+      return filterNodes;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
   void enableFilter() {
     _enabled = true;
     if (global) {
@@ -85,8 +104,9 @@ class FilterProvider with ChangeNotifier {
   void updateFilter(Filter filter) {
     _relevanceFilter = filter;
     if (global) {
-      PrefService.setStringList(
-          'relevant_nodes', _relevanceFilter.relevantNodes);
+      // PrefService.setStringList(
+      //     'relevant_nodes', _relevanceFilter.relevantNodes);
+      setFilterNodes(_relevanceFilter.relevantNodes);
     }
     notifyListeners();
   }
@@ -105,6 +125,8 @@ class FilterProvider with ChangeNotifier {
       final ref = col.document('relevance');
       final doc = await ref.get();
       final data = doc.data;
+      final DocumentReference docUsers = _db.collection('users').document(authProvider.uid);
+      final DocumentSnapshot snapUsers = await docUsers.get();
 
       final levelNames = <Map<String, String>>[];
       // Cast from List<dynamic> to List<Map<String, String>>
@@ -115,9 +137,8 @@ class FilterProvider with ChangeNotifier {
 
       // Check if there is an existing setting already
       if (global) {
-        _relevantNodes = PrefService.get('relevant_nodes') == null
-            ? null
-            : List<String>.from(PrefService.get('relevant_nodes'));
+        //_relevantNodes = PrefService.get('relevant_nodes') == null
+        _relevantNodes = List<String>.from(snapUsers['filter_nodes']);
       }
 
       final root = data['root'];
